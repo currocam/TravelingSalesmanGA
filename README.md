@@ -1,4 +1,4 @@
-#TravelingSalesmanGA
+# TravelingSalesmanGA
 This python script allows you to implement a genetic algorithm to the [Traveling Salesman Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem) for a bunch of cities. It was created with educational purposes.
 
 ## General info
