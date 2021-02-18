@@ -6,9 +6,34 @@ from geopy import distance
 from geopy.geocoders import Nominatim
 from celluloid import Camera
 import seaborn as sns
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 class Ciudad:
+    """Una clase que representa una ciudad del problema
+
+    Parámetros
+    ----------
+    lat : float
+        Latitud de la ciudad.
+    lon : float
+        Longitud de la ciudad..
+    nombre : str
+        Nombre de la ciudad.
+
+    Atributos
+    ----------
+    lat : float
+    lon : float
+    nombre : str
+
+    Métodos
+    -------
+    distancia(self, ciudad2):
+        Devuelve la distancia entre dos ciudades.
+
+    """
     def __init__(self, lat, lon, nombre):
         self.lat = lat
         self.lon = lon
@@ -22,6 +47,27 @@ class Ciudad:
 
 
 class Ruta:
+    """Una clase que representa una posible ruta.
+
+    Parámetros
+    ----------
+    itinerario : list
+        Lista con las Ciudades que conforman la ruta.
+
+    Atributos
+    ----------
+    dist : float
+        Distancia total de la ruta en km.
+    fitness : float
+        Inverso de la distancia.
+    itinerario: list
+
+    Métodos
+    -------
+    trayecto(self):
+        Devuelve una lista con los nombres de las ciudades que conforman la ruta.
+
+    """
     def __init__(self, itinerario):
 
         self.itinerario = itinerario
@@ -48,19 +94,19 @@ class Ruta:
 def geolocalizar(nombre_ciudad):
     """Localiza una ciudad dada y devuelve su dirección y sus coordendas.
 
-    Parameters
+    Parámetros
     ----------
     nombre_ciudad : str
         Nombre de la ciudad introducida.
 
-    Returns
+    Devuelve
     -------
     coordenadas: list
     direccion: str
         Par de coordenadas y dirección de la ciudad.
 
     """
-    geolocator = Nominatim(user_agent="Salesman")
+    geolocator = Nominatim(user_agent="Salesman", timeout=10)
     localizacion = geolocator.geocode(nombre_ciudad)
     coordenadas = (localizacion.latitude, localizacion.longitude)
     direccion = localizacion.address
@@ -70,12 +116,12 @@ def geolocalizar(nombre_ciudad):
 def geolocalizarCiudades(lista_ciudades: list):
     """Para una lista con nombres de ciudades devuelve una fila de DataFrame.
 
-    Parameters
+    Parámetros
     ----------
     lista_ciudades : list
         Lista de nombres de ciudades.
 
-    Returns
+    Devuelve
     -------
     df_Fila: pandas.DataFrame
         Fila de un DataFrame que incluye el nombre de la ciudad, el par de coordenadas, la dirección completa de la ciudad y una instancia de la clase Ciudad.
@@ -98,14 +144,14 @@ def geolocalizarCiudades(lista_ciudades: list):
 def generarDataFrameCiudades(lista_ciudades: list, Mostrar=True):
     """Genera el DataFrame completo para todas las ciudades del problema.
 
-    Parameters
+    Parámetros
     ----------
     lista_ciudades : list
         Lista de nombres de ciudades.
     Mostrar : bool
         Si Mostrar==True se imprime en la terminal información sobre las ciudades que se recogen.
 
-    Returns
+    Devuelve
     -------
     df_ciudades: pandas.DataFrame
         DataFrame de todas las ciudades que incluye el nombre de la ciudad, el par de coordenadas, la dirección completa de la ciudad y una instancia de la clase Ciudad.
@@ -115,7 +161,7 @@ def generarDataFrameCiudades(lista_ciudades: list, Mostrar=True):
     if Mostrar:
         for i in range(df_ciudades.shape[0]):
             print(
-                "Se han añadido las coordendas de la localidad: {0} \n".format(
+                "Se han añadido las coordendas de la localidad: {0}".format(
                     df_ciudades.iloc[i]['Direccion']))
     return df_ciudades
 
@@ -123,14 +169,14 @@ def generarDataFrameCiudades(lista_ciudades: list, Mostrar=True):
 def llamarCiudades(lista_ciudades: list, df_ciudades):
     """Para una lista de nombres de ciudades devuelve una lista equivalente con las instancias de la clase Ciudad correspondientes.
 
-    Parameters
+    Parámetros
     ----------
     lista_ciudades : list
         Lista de nombres de ciudades
     df_ciudades : pandas.DataFrame
         DataFrame generado con la función generarDataFrameCiudades(),
 
-    Returns
+    Devuelve
     -------
     ciudades: list
         Lista con instancias de la clase Ciudad
@@ -147,11 +193,11 @@ def llamarCiudades(lista_ciudades: list, df_ciudades):
 def crearRuta(ciudades):
     """Genera una instancia de la clase Ruta aleatoria que pasa por todas las ciudades.
 
-    Parameters
+    Parámetros
     ----------
     ciudades: list
         Lista con instancias de la clase Ciudad
-    Returns
+    Devuelve
     -------
     ruta: AlgoritmoGeneticoTravelingSalesman.Ruta
         Instancia de la clase Ruta.
@@ -164,12 +210,12 @@ def crearRuta(ciudades):
 def generarDataFrameRuta(ruta):
     """Para una instancia de la clase Ruta devuelve una fila de DataFrame.
 
-    Parameters
+    Parámetros
     ----------
     ruta : AlgoritmoGeneticoTravelingSalesman.Ruta
         Instancia de la clase Ruta.
 
-    Returns
+    Devuelve
     -------
     df_Fila: pandas.DataFrame
         Fila de un DataFrame con la información correspondiente a una Ruta.
@@ -190,14 +236,14 @@ def generarDataFrameRuta(ruta):
 def IniciarPoblacion(n, ciudades):
     """Genera una población de rutas para una lista de ciudades .
 
-    Parameters
+    Parámetros
     ----------
     n : int
         Número de rutas que conformarán la población.
     ciudades: list
         Lista con instancias de la clase Ciudad
 
-    Returns
+    Devuelve
     -------
     df_pop: pandas.DataFrame
         DataFrame con toda la información de una población de rutas
@@ -214,12 +260,12 @@ def IniciarPoblacion(n, ciudades):
 def seleccionarIndividuoTorneo(df_pop):
     """Selecciona un individuo (osea, una ruta) mediante selección por torneos. Se enfrentan 2 individuos escogidos al azar y el de mayor aptitud es devuelto.
 
-    Parameters
+    Parámetros
     ----------
     df_pop: pandas.DataFrame
         DataFrame con toda la información de una población de rutas
 
-    Returns
+    Devuelve
     -------
     winner: pandas.core.series.Series
         Fila del DataFrame correspondiente al individuo escogido por selección por torneo.
@@ -241,7 +287,7 @@ def seleccionarIndividuoTorneo(df_pop):
 def crossover(parent1, parent2, df_ciudades):
     """Cruza dos individuos de forma ordenada para devolver  descendiente que combina las características de los progenitores.
 
-    Parameters
+    Parámetros
     ----------
     parent1 : pandas.DataFrame
         Fila del DataFrame de la población que corresponde al individuo 1 que se desea cruzar.
@@ -250,7 +296,7 @@ def crossover(parent1, parent2, df_ciudades):
     df_ciudades : pandas.DataFrame
         DataFrame generado con la función generarDataFrameCiudades()
 
-    Returns
+    Devuelve
     -------
     Ruta(F1): AlgoritmoGeneticoTravelingSalesman.Ruta
         Instancia de la clase Ruta resultante del cruzamiento de ambos progenitores.
@@ -272,7 +318,7 @@ def crossover(parent1, parent2, df_ciudades):
 def mutate(ruta, tasaMutacion, df_ciudades):
     """Produce mutación (intercambia genes, osea ciudades, de posición en la ruta) en un individuo.
 
-    Parameters
+    Parámetros
     ----------
     ruta: AlgoritmoGeneticoTravelingSalesman.Ruta
         Instancia de la clase Ruta que se desea mutar.
@@ -281,7 +327,7 @@ def mutate(ruta, tasaMutacion, df_ciudades):
     df_ciudades : pandas.DataFrame
         DataFrame generado con la función generarDataFrameCiudades()
 
-    Returns
+    Devuelve
     -------
     Ruta(IndMutado)
         Instancia de la clase Ruta resultante del proceso de mutación aleatorio.
@@ -303,7 +349,7 @@ def cruzamientoPoblacion(
         tasaMutacion=0.1):
     """Genera a partir de una población la siguiente generación simulando cruzamiento y mutación. Se incluye "elitismo", es decir, una parte de la población más apta pasa directamente a la siguiente generación.
 
-    Parameters
+    Parámetros
     ----------
     df_pop: pandas.DataFrame
         DataFrame con toda la información de una población de rutas
@@ -314,7 +360,7 @@ def cruzamientoPoblacion(
     tasaMutacion : float
         Probabilidad de que se produzca una mutación para cada uno de los genes del individuo.
 
-    Returns
+    Devuelve
     -------
     newdf: pandas.DataFrame
         DataFrame con toda la información de la siguiente generación.

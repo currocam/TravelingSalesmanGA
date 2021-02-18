@@ -16,7 +16,11 @@ def fotograma():
     """
     plot = sns.distplot(1 / df.iloc[0:50]["Fitness"], color='red')
     ax.set(xlabel='Distancia (km)', ylabel='')
-    ax.text(0.6, 1.01, "Generación F" + str(i), transform=ax.transAxes)
+    ax.text(0.9, 1.01, "Generación F" + str(i), transform=ax.transAxes)
+    mejorRuta="Mejor ruta: -"
+    for ciudad in df.iloc[0]["Itinerario"]:
+        mejorRuta= mejorRuta+ciudad[:3]+"-"
+    ax.text(0, 1.08, mejorRuta, transform=ax.transAxes)
     camera.snap()
 
 
@@ -29,12 +33,12 @@ if __name__ == "__main__":
 
     """
     lista_ciudades = sys.argv[1:]
-    n_pop = 100  # tamaño de la población
-    n_elite = 20  # Los n-elite individuos más aptos pasarán directamente a la siguiente generación
+    n_pop = 200  # tamaño de la población
+    n_elite = 11  # Los n-elite individuos más aptos pasarán directamente a la siguiente generación
     # Probabilidad de que se produzca una mutación para cada uno de los genes
     # del individuo.
-    tasaMutacion = 0.01
-    n_generaciones = 5  # Número de generaciones que se van a generar
+    tasaMutacion = 0.1
+    n_generaciones = 700  # Número de generaciones que se van a generar
     df_ciudades = GA.generarDataFrameCiudades(lista_ciudades)
     ciudades = GA.llamarCiudades(lista_ciudades, df_ciudades)
     print("\n Se comienza a generar la población\n")

@@ -22,6 +22,14 @@ $ python TravelingSalesmanSolverAnimation.py Sevilla Cadiz Malaga Granada Marche
 ```
 That will return after a while the best route found and an animated graph, hopefully, similar to this:
 
+```
+$ Se ha terminado el proceso
+$
+$ ['Huelva', 'Malaga', 'Antequera', 'Badajoz', 'Salamanca', 'Madrid', 'Getafe', 'Valladolid', 'Burgos', 'Badalona', 'Alicante', 'Murcia', 'Adra', 'Lorca', 'Granada', 'Carmona', 'Grazalema', 'Sevilla', 'Algeciras', 'Cadiz', 'Marchena']
+$ Con una distancia de 3543.225585758931 kilometros
+```
+
+
 ![](animation.gif)
 
 In order to just get the best route use:
