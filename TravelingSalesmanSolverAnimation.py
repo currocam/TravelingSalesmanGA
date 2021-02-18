@@ -34,11 +34,11 @@ if __name__ == "__main__":
     """
     lista_ciudades = sys.argv[1:]
     n_pop = 200  # tamaño de la población
-    n_elite = 10  # Los n-elite individuos más aptos pasarán directamente a la siguiente generación
+    n_elite = 11  # Los n-elite individuos más aptos pasarán directamente a la siguiente generación
     # Probabilidad de que se produzca una mutación para cada uno de los genes
     # del individuo.
-    tasaMutacion = 0.05
-    n_generaciones = 600  # Número de generaciones que se van a generar
+    tasaMutacion = 0.1
+    n_generaciones = 700  # Número de generaciones que se van a generar
     df_ciudades = GA.generarDataFrameCiudades(lista_ciudades)
     ciudades = GA.llamarCiudades(lista_ciudades, df_ciudades)
     print("\n Se comienza a generar la población\n")
