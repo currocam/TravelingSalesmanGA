@@ -44,14 +44,14 @@ if __name__ == "__main__":
     print("\n Se comienza a generar la población\n")
     df = GA.IniciarPoblacion(n_pop, ciudades)
     i = 1
-    print("\n Se ha generado la población parental con éxito. \n")
+    print("\n Se ha generado la población parental con éxito. \n",  end='\r')
     # generamos figura para la animación
     fig, ax = plt.subplots(figsize=(9, 6))
     camera = Camera(fig)
     evolucion = []
     while i <= n_generaciones:
         df = GA.cruzamientoPoblacion(df, df_ciudades, n_elite, tasaMutacion)
-        print("Generación F{0} creada con éxito".format(i))
+        print("Generación F{0} creada con éxito".format(i),  end='\r')
         fotograma()
         i += 1
         evolucion.append(1 / df.iloc[0:50]["Fitness"])

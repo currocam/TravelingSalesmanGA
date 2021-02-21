@@ -19,14 +19,14 @@ if __name__ == "__main__":
     n_generaciones = 5  # Número de generaciones que se van a generar
     df_ciudades = GA.generarDataFrameCiudades(lista_ciudades)
     ciudades = GA.llamarCiudades(lista_ciudades, df_ciudades)
-    print("\n Se comienza a generar la población\n")
+    print("\n Se comienza a generar la población\n",  end='\r')
     df = GA.IniciarPoblacion(n_pop, ciudades)
     i = 1
-    print("\n Se ha generado la población parental con éxito. \n")
+    print("\n Se ha generado la población parental con éxito. \n",  end='\r')
     evolucion = []
     while i <= n_generaciones:
         df = GA.cruzamientoPoblacion(df, df_ciudades, n_elite, tasaMutacion)
-        print("Generación F{0} creada con éxito".format(i))
+        print("Generación F{0} creada con éxito".format(i),  end='\r')
         i += 1
         evolucion.append(1 / df.iloc[0:50]["Fitness"])
     print("\n")
