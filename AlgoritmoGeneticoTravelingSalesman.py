@@ -6,6 +6,7 @@ from geopy import distance
 from geopy.geocoders import Nominatim
 from celluloid import Camera
 import seaborn as sns
+import numpy.random as npr
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -34,6 +35,7 @@ class Ciudad:
         Devuelve la distancia entre dos ciudades.
 
     """
+
     def __init__(self, lat, lon, nombre):
         self.lat = lat
         self.lon = lon
@@ -68,6 +70,7 @@ class Ruta:
         Devuelve una lista con los nombres de las ciudades que conforman la ruta.
 
     """
+
     def __init__(self, itinerario):
 
         self.itinerario = itinerario
@@ -257,14 +260,12 @@ def IniciarPoblacion(n, ciudades):
     return df_pop
 
 
-def seleccionarIndividuoTorneo(df_pop):
-    """Selecciona un individuo (osea, una ruta) mediante selección por torneos. Se enfrentan 2 individuos escogidos al azar y el de mayor aptitud es devuelto.
-
+def FitnessProportionateSelecion(df_pop):
+    """Selecciona un individuo (osea, una ruta) mediante selección por una selección proporcional al fitness.
     Parámetros
     ----------
     df_pop: pandas.DataFrame
         DataFrame con toda la información de una población de rutas
-
     Devuelve
     -------
     winner: pandas.core.series.Series
@@ -272,16 +273,55 @@ def seleccionarIndividuoTorneo(df_pop):
 
     """
     n = df_pop.shape[0]
-    fighter_1 = df_pop.iloc[random.randint(0, n - 1)]
-    fighter_2 = df_pop.iloc[random.randint(0, n - 1)]
+    max = sum([row.Fitness for index, row in df_pop.iterrows()])
+    selection_probs = [row.Fitness / max for index, row in df_pop.iterrows()]
+    index = npr.choice(range(n), p=selection_probs)
+    winner = df_pop.loc[index]
+    return winner
 
+
+def seleccionarIndividuoTorneo(df_pop, k):
+    """Selecciona un individuo (osea, una ruta) mediante selección por torneos. Se enfrentan k individuos escogidos al azar y el de mayor aptitud es devuelto.
+
+    Parámetros
+    ----------
+    df_pop: pandas.DataFrame
+        DataFrame con toda la información de una población de rutas
+    k: int
+        Número de pretendientes que se enfrentarán en torneo para reproducirse. Si k=0, entonces se seleccionan de forma proporcional al Fitness.
+
+    Devuelve
+    -------
+    winner: pandas.core.series.Series
+        Fila del DataFrame correspondiente al individuo escogido por selección por torneo.
+
+    """
+    pretendientes = df_pop.sample(n=k)
     # selección por torneo determinista, se selecciona al mejor individuo con
     # p=1
-    if fighter_1.Fitness >= fighter_2.Fitness:
-        winner = fighter_1
-    else:
-        winner = fighter_2
+    index = pretendientes['Fitness'].argmax()
+    winner = df_pop.loc[index]
     return winner
+
+
+def seleccionarProgenitores(df_pop, k):
+    """Selecciona el par de progenitores de acorde a los dos métodos disponibles.
+
+    Parameters
+    ----------
+    df_pop: pandas.DataFrame
+        DataFrame con toda la información de una población de rutas
+    k: int
+        Número de pretendientes que se enfrentarán en torneo para reproducirse. Si k=0, entonces se seleccionan de forma proporcional al Fitness.
+    """
+    if k == 0:
+        parent1 = FitnessProportionateSelecion(df_pop)
+        parent2 = FitnessProportionateSelecion(df_pop)
+        return parent1, parent2
+    else:
+        parent1 = seleccionarIndividuoTorneo(df_pop, k)
+        parent2 = seleccionarIndividuoTorneo(df_pop, k)
+        return parent1, parent2
 
 
 def crossover(parent1, parent2, df_ciudades):
@@ -346,7 +386,8 @@ def cruzamientoPoblacion(
         df_pop,
         df_ciudades,
         n_elite=20,
-        tasaMutacion=0.1):
+        tasaMutacion=0.1,
+        k=5):
     """Genera a partir de una población la siguiente generación simulando cruzamiento y mutación. Se incluye "elitismo", es decir, una parte de la población más apta pasa directamente a la siguiente generación.
 
     Parámetros
@@ -359,6 +400,8 @@ def cruzamientoPoblacion(
         Los n-elite individuos más aptos pasarán directamente a la siguiente generación
     tasaMutacion : float
         Probabilidad de que se produzca una mutación para cada uno de los genes del individuo.
+    k: int
+        Número de pretendientes que se enfrentarán en torneo para reproducirse. Si k=0, entonces se seleccionan de forma proporcional al Fitness.
 
     Devuelve
     -------
@@ -367,11 +410,12 @@ def cruzamientoPoblacion(
 
     """
     n = df_pop.shape[0] - n_elite
-    newdf = df_pop.head(n_elite)  # Aquí se introduce el elitismo
-    df_pop = df_pop.iloc[n_elite:]
+    if n_elite == 0:
+        newdf = df_pop[0:0]
+    else:
+        newdf = df_pop.head(n_elite)  # Aquí se introduce el elitismo
     for i in range(n):
-        parent1 = seleccionarIndividuoTorneo(df_pop)
-        parent2 = seleccionarIndividuoTorneo(df_pop)
+        parent1, parent2 = seleccionarProgenitores(df_pop, k)
         rutaHija = crossover(parent1, parent2, df_ciudades)
         rutaHijaMutada = mutate(rutaHija, tasaMutacion, df_ciudades)
         data = generarDataFrameRuta(rutaHijaMutada)

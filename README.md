@@ -6,36 +6,37 @@ The script work as follows:
 1. Geolocation of the group of cities of interest with the [geopy library](https://github.com/geopy/geopy)
 2. Start an initial generation (generate random routes)
 3. Calculate population fitness
-4. Mating pool (Deterministic tournament selection and the Elitism Strategy)
+4. Mating pool (Deterministic tournament selection or Fitness Proportionate Selecion with/without the Elitism Strategy)
 5. Crossover and mutation over the population
 6. Generate next population and repeat steps 3-5
 ## Technologies
 * Python 3.8.5
 
 ## Example of use
-To run the algorithm for a list of cities in the terminal and save an animated graph:
+To run the algorithm for a list of cities in the terminal and save an animated graph, as well as a html file with the route representation:
 
 ```
 $ cd ../TravelingSalesmanGA
-$ python TravelingSalesmanSolverAnimation.py Sevilla Cadiz Malaga Granada Marchena Madrid Alicante Valladolid Badalona Burgos Getafe Badajoz Salamanca Algeciras Carmona Antequera Lorca Murcia Grazalema Adra Huelva Zufre Bormujos
+$ python TravelingSalesmanSolverAnimation.py Sevilla Cadiz Malaga Granada Marchena Madrid Alicante Valladolid Badalona Burgos Getafe Badajoz Salamanca Algeciras Carmona Antequera Lorca Murcia Grazalema Adra Huelva
 
 ```
-That will return after a while the best route found and an animated graph, hopefully, similar to this:
+That will return after a while the best route found, hopefully, similar to this:
 
 ```
 $ Se ha terminado el proceso
-$
-$ ['Huelva', 'Malaga', 'Antequera', 'Badajoz', 'Salamanca', 'Madrid', 'Getafe', 'Valladolid', 'Burgos', 'Badalona', 'Alicante', 'Murcia', 'Adra', 'Lorca', 'Granada', 'Carmona', 'Grazalema', 'Sevilla', 'Algeciras', 'Cadiz', 'Marchena']
-$ Con una distancia de 3543.225585758931 kilometros
+$ ['Badalona', 'Alicante', 'Murcia', 'Lorca', 'Adra', 'Granada', 'Malaga', 'Antequera', 'Grazalema', 'Algeciras', 'Cadiz', 'Sevilla', 'Marchena', 'Carmona', 'Huelva', 'Badajoz', 'Salamanca', 'Valladolid', 'Burgos', 'Madrid', 'Getafe']
+$ Con una distancia de 2314.580758623623 kilometros
 ```
 
 
 ![](animation.gif)
 
+![](Screenshot_Ruta.png)
+
 In order to just get the best route use:
 
 ```
 $ cd ../TravelingSalesmanGA
-$ python TravelingSalesmanSolver.py Sevilla Cadiz Malaga Granada Marchena Madrid Alicante Valladolid Badalona Burgos Getafe Badajoz Salamanca Algeciras Carmona Antequera Lorca Murcia Grazalema Adra Huelva Zufre Bormujos
+$ python TravelingSalesmanSolver.py Sevilla Cadiz Malaga Granada Marchena Madrid Alicante Valladolid Badalona Burgos Getafe Badajoz Salamanca Algeciras Carmona Antequera Lorca Murcia Grazalema Adra Huelva
 
 ```
