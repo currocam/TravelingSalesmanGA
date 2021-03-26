@@ -33,10 +33,23 @@ $ Con una distancia de 2314.580758623623 kilometros
 
 ![](Screenshot_Ruta.png)
 
+![](Ruta.html)
+
+
 In order to just get the best route use:
 
 ```
 $ cd ../TravelingSalesmanGA
 $ python TravelingSalesmanSolver.py Sevilla Cadiz Malaga Granada Marchena Madrid Alicante Valladolid Badalona Burgos Getafe Badajoz Salamanca Algeciras Carmona Antequera Lorca Murcia Grazalema Adra Huelva
+
+```
+
+In order to create a virtual environment with conda and install all Python libraries that the scripts depend on:
+```
+$ git clone https://github.com/currocam/TravelingSalesmanGA
+$ conda create --name env_nombre python=3.8.5
+$ conda activate env_nombre
+$ cd ../TravelingSalesmanGA
+$ pip install -r requirements.txt
 
 ```
